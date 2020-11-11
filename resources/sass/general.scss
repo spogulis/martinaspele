@@ -1,0 +1,20 @@
+#app {
+    >div {
+        display: flex;
+    }
+}
+
+.navbar {
+    flex-direction: column;
+    min-width: 350px;
+    max-width: 350px;
+    height: 100vh;
+    background: black;
+    .navbar-brand {
+        color: white;
+    }
+}
+
+main {
+    width: 100%;
+}
