@@ -12,9 +12,11 @@ class SkillController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $user = $request->input('userId');
+
+        return response()->json(Skill::all()->toArray());
     }
 
     /**
@@ -35,7 +37,23 @@ class SkillController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $skill = Skill::create([
+            'skill_name' => $request->skill_name,
+            'skill_type' => $request->skill_type,
+            'skill_description' => $request->skill_description,
+            'exp_to_reach' => $request->exp_to_reach,
+            'exp_increase_type' => $request->exp_increase_type,
+            'exp_increase_ratio' => $request->exp_increase_ratio,
+            'affects_general_level' => $request->affects_general_level
+        ]);
+
+        $data = [
+            'data' => $skill,
+            'status' => (bool) $skill,
+            'message' => $skill ? 'Skill Created!' : "Couldn't create a new skill",
+        ];
+
+        return response()->json($data);
     }
 
     /**
