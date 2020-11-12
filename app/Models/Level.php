@@ -19,7 +19,8 @@ class Level extends Model
         'current_exp',
         'exp_to_level_up',
         'exp_increase_ratio',
-        'level_achievement_date'];
+        'level_achievement_date'
+    ];
 
     public function skill(){
         return $this->hasOne(Skill::class);
