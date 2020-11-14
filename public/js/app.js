@@ -1959,6 +1959,8 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     handleSubmit: function handleSubmit(e) {
+      var _this = this;
+
       e.preventDefault();
 
       if (this.password.length > 0) {
@@ -1966,11 +1968,19 @@ __webpack_require__.r(__webpack_exports__);
           email: this.email,
           password: this.password
         }).then(function (response) {
-          localStorage.setItem('user', response.data.success.name);
-          localStorage.setItem('jwt', response.data.success.token); // this.$store.state.email =
-          // if (localStorage.getItem('jwt') != null){
-          //     this.$router.go('/board')
-          // }
+          if (response.data.success) {
+            localStorage.setItem('user', response.data.success.user_email);
+            localStorage.setItem('jwt', response.data.success.access_token);
+            _this.$store.state.loggedInUser = response.data.success.user_email;
+            _this.$store.state.userToken = response.data.success.access_token;
+            _this.$store.state.isLoggedIn = true;
+            _this.$store.state.logoutBtnVisible = true;
+            _this.$store.state.loginEmailVisible = true;
+
+            _this.$store.commit('toggleLoginModalVisibleState');
+          } else {
+            JSON.stringify(response);
+          }
         })["catch"](function (error) {
           console.error(error);
         });
@@ -1979,6 +1989,11 @@ __webpack_require__.r(__webpack_exports__);
     handleCancel: function handleCancel(e) {
       this.$store.commit('toggleLoginModalVisibleState');
       this.$store.commit('toggleLoginBtnVisibleState');
+    }
+  },
+  computed: {
+    windowWidth: function windowWidth() {
+      return this.$store.state.windowWidth;
     }
   }
 });
@@ -2112,13 +2127,35 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   mounted: function mounted() {
-    this.isLoggedIn = localStorage.getItem('jwt');
-    this.name = localStorage.getItem('user');
+    var email = localStorage.getItem('user');
+    var token = localStorage.getItem('jwt');
+
+    if (email && token) {
+      this.$store.state.loggedInUser = email;
+      this.$store.state.isLoggedIn = true;
+      this.$store.state.userToken = token;
+    } else {
+      this.$store.state.isLoggedIn = false;
+    }
   },
   computed: {
     checkLoginModalVisible: function checkLoginModalVisible() {
       return this.$store.state.loginModalVisible;
     }
+  },
+  created: function created() {
+    var _this = this;
+
+    window.addEventListener('resize', function () {
+      _this.$store.commit('setWindowWidth');
+    });
+  },
+  destroyed: function destroyed() {
+    var _this2 = this;
+
+    window.removeEventListener('resize', function () {
+      _this2.$store.commit('setWindowWidth');
+    });
   }
 });
 
@@ -2145,16 +2182,47 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   methods: {
     showLoginModal: function showLoginModal() {
       this.$store.commit('toggleLoginModalVisibleState');
       this.$store.commit('toggleLoginBtnVisibleState');
+    },
+    logout: function logout() {
+      this.$store.dispatch('logout');
     }
   },
   computed: {
     btnLoginVisible: function btnLoginVisible() {
       return this.$store.state.loginBtnVisible;
+    },
+    btnLogoutVisible: function btnLogoutVisible() {
+      return this.$store.state.logoutBtnVisible;
+    },
+    isLoggedIn: function isLoggedIn() {
+      return this.$store.state.isLoggedIn;
+    },
+    userName: function userName() {
+      if (this.$store.state.loggedInUser) {
+        return this.$store.state.loggedInUser;
+      }
+
+      return this.$store.state.loggedInUser;
     }
   }
 });
@@ -3455,7 +3523,11 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c("div", { ref: "login-modal-wrapper" }, [
     _c("form", { staticClass: "login-modal" }, [
-      _vm._m(0),
+      _vm.windowWidth > 768
+        ? _c("div", { staticClass: "title-wrapper" }, [
+            _c("h2", { staticClass: "d-inline mt-1" }, [_vm._v("Login")])
+          ])
+        : _vm._e(),
       _vm._v(" "),
       _c("div", { staticClass: "input-field-wrapper" }, [
         _c("div", { staticClass: "input-field-wrapper-left" }, [
@@ -3533,16 +3605,7 @@ var render = function() {
     ])
   ])
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "title-wrapper" }, [
-      _c("h2", { staticClass: "d-inline mt-1" }, [_vm._v("Login")])
-    ])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 
 
@@ -3674,7 +3737,7 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "wrapper" }, [
     _c("div", { staticClass: "header-bg" }, [
-      _vm.btnLoginVisible
+      !_vm.isLoggedIn
         ? _c(
             "button",
             {
@@ -3685,7 +3748,28 @@ var render = function() {
                 }
               }
             },
-            [_vm._v("LOGIN")]
+            [_vm._v("LOGIN\n        ")]
+          )
+        : _vm._e(),
+      _vm._v(" "),
+      _vm.isLoggedIn
+        ? _c("h4", { staticClass: "user-name d-inline-block" }, [
+            _vm._v("\n            " + _vm._s(_vm.userName) + "\n        ")
+          ])
+        : _vm._e(),
+      _vm._v(" "),
+      _vm.isLoggedIn
+        ? _c(
+            "button",
+            {
+              staticClass: "btn btn-outline-dark py-0",
+              on: {
+                click: function($event) {
+                  return _vm.logout()
+                }
+              }
+            },
+            [_vm._v("LOGOUT\n        ")]
           )
         : _vm._e()
     ])
@@ -20424,22 +20508,37 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-  login: function login(_ref) {
-    var commit = _ref.commit;
-    axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/login').then(function (Response) {
-      commit('login', Response.data); // console.log(Response)
-      // console.log('login success')
-    });
-  } // loadAllSkills({
-  //     commit
-  // }) {
-  //     Axios.get('api/skills').then(Response => {
-  //         commit('updateAllSkills', Response.data)
-  //         console.log(Response)
-  //         console.log('loadAllSkills from actions')
-  //     })
-  // }
+  logout: function logout(_ref) {
+    var _this = this;
 
+    var commit = _ref.commit;
+    var headers = {
+      headers: {
+        'Accept': 'application/json',
+        'Authorization': "Bearer ".concat(this.state.userToken)
+      }
+    };
+    axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/api/user/logout', headers).then(function (Response) {
+      _this.state.isLoggedIn = false;
+      localStorage.clear();
+
+      if (!_this.state.loginBtnVisible) {
+        _this.commit('toggleLoginBtnVisibleState');
+      }
+
+      if (_this.state.logoutBtnVisible) {
+        _this.commit('toggleLogoutBtnVisibleState');
+      }
+
+      if (_this.state.loginModalVisible) {
+        _this.commit('toggleLoginModalVisibleState');
+      }
+
+      if (_this.state.loginEmailVisible) {
+        _this.commit('toggleLoginEmailVisibleState');
+      }
+    });
+  }
 });
 
 /***/ }),
@@ -20500,13 +20599,21 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ __webpack_exports__["default"] = ({
   login: function login(state, isLoggedIn) {
     state.isLoggedIn = isLoggedIn;
-    console.log('login from mutations');
+  },
+  setWindowWidth: function setWindowWidth(state) {
+    state.windowWidth = window.innerWidth;
   },
   toggleLoginModalVisibleState: function toggleLoginModalVisibleState(state) {
     state.loginModalVisible = !state.loginModalVisible;
   },
   toggleLoginBtnVisibleState: function toggleLoginBtnVisibleState(state) {
     state.loginBtnVisible = !state.loginBtnVisible;
+  },
+  toggleLogoutBtnVisibleState: function toggleLogoutBtnVisibleState(state) {
+    state.logoutBtnVisible = !state.logoutBtnVisible;
+  },
+  toggleLoginEmailVisibleState: function toggleLoginEmailVisibleState(state) {
+    state.loginEmailVisible = !state.loginEmailVisible;
   }
 });
 
@@ -20522,10 +20629,11 @@ __webpack_require__.r(__webpack_exports__);
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ __webpack_exports__["default"] = ({
-  skills: [],
+  windowWidth: 0,
   isLoggedIn: false,
   loginModalVisible: false,
-  loginBtnVisible: true
+  loggedInUser: "",
+  userToken: ""
 });
 
 /***/ }),

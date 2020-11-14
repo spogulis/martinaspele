@@ -50,14 +50,39 @@ export default {
         }
     },
     mounted(){
-        this.isLoggedIn = localStorage.getItem('jwt');
-        this.name = localStorage.getItem('user');
+        let email = localStorage.getItem('user');
+        let token = localStorage.getItem('jwt');
+
+        if (email && token) {
+            this.$store.state.loggedInUser = email;
+            this.$store.state.isLoggedIn = true;
+            this.$store.state.userToken = token;
+        }
+        else {
+            this.$store.state.isLoggedIn = false;
+        }
     },
     computed: {
         checkLoginModalVisible() {
             return this.$store.state.loginModalVisible;
         }
-    }
+    },
+    created() {
+        window.addEventListener(
+            'resize', () =>
+            {
+                this.$store.commit('setWindowWidth')
+            }
+        )
+    },
+    destroyed() {
+        window.removeEventListener(
+            'resize', () =>
+            {
+                this.$store.commit('setWindowWidth')
+            }
+        )
+    },
 }
 </script>
 

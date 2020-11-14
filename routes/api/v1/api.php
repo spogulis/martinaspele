@@ -16,19 +16,18 @@ use App\Http\Controllers\SkillController;
 |
 */
 
-// Route::middleware('auth:api')->get('/user', function (Request $request) {
-//     return $request->user();
-// });
+// Route::post('/skills', [SkillController::class, 'index']);
 
-Route::group(['middleware' => 'auth:api'], function(){
-    Route::post('/skills', [SkillController::class, 'index']);
-    // Route::resource('/skills', 'SkillController');
-});
 
-// User related
+//User related
 Route::prefix('/user')->group(function() {
     Route::post('/login', [UserController::class, 'login']);
     Route::post('/register', [UserController::class, 'register']);
+
+    Route::group(['middleware' => 'auth:api'], function () {
+        Route::get('/logout', [UserController::class, 'logout']);
+        Route::get('/user', [UserController::class, 'user']);
+    });
 });
 
 

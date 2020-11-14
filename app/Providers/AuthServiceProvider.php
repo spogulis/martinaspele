@@ -27,6 +27,7 @@ class AuthServiceProvider extends ServiceProvider
         $this->registerPolicies();
 
         Passport::routes(); //init passport routes
+        Passport::cookie('esoteric_cookie');
         // Passport::hashClientSecrets(); //client secrets will only be shown one time when your client is created
     }
 }

@@ -1,7 +1,7 @@
 <template>
     <div ref="login-modal-wrapper">
         <form class="login-modal">
-            <div class="title-wrapper">
+            <div class="title-wrapper"  v-if="windowWidth > 768">
                 <h2 class="d-inline mt-1">Login</h2>
             </div>
 
@@ -58,17 +58,25 @@
                         password: this.password
                         })
                         .then(response => {
-                        localStorage.setItem('user',response.data.success.name)
-                        localStorage.setItem('jwt',response.data.success.token)
+                            if (response.data.success)
+                            {
+                                localStorage.setItem('user',response.data.success.user_email)
+                                localStorage.setItem('jwt',response.data.success.access_token)
 
-                        // this.$store.state.email =
-
-                        // if (localStorage.getItem('jwt') != null){
-                        //     this.$router.go('/board')
-                        // }
+                                this.$store.state.loggedInUser = response.data.success.user_email;
+                                this.$store.state.userToken = response.data.success.access_token;
+                                this.$store.state.isLoggedIn = true;
+                                this.$store.state.logoutBtnVisible = true;
+                                this.$store.state.loginEmailVisible = true;
+                                this.$store.commit('toggleLoginModalVisibleState');
+                            }
+                            else
+                            {
+                                JSON.stringify(response);
+                            }
                         })
                         .catch(function (error) {
-                        console.error(error);
+                            console.error(error);
                         });
                 }
             },
@@ -76,11 +84,18 @@
                 this.$store.commit('toggleLoginModalVisibleState');
                 this.$store.commit('toggleLoginBtnVisibleState');
             }
+        },
+        computed: {
+            windowWidth() {
+                return this.$store.state.windowWidth;
+            }
         }
     }
 </script>
 
 <style scoped lang="scss">
+    @import '~/abstracts/_mixins.scss';
+
     label {
         font-size: 20px;
     }

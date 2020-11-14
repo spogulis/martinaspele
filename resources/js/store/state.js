@@ -1,6 +1,7 @@
 export default {
-    skills: [],
+    windowWidth: 0,
     isLoggedIn: false,
     loginModalVisible: false,
-    loginBtnVisible: true
+    loggedInUser: "",
+    userToken: ""
 }
