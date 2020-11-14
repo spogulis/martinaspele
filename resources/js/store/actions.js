@@ -1,24 +1,35 @@
 import Axios from "axios"
 
 export default {
-    login({
+    logout({
         commit
     }) {
-        Axios.get('/login').then(Response => {
-            commit('login', Response.data)
-                // console.log(Response)
-                // console.log('login success')
+        let headers = {
+            headers: {
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${this.state.userToken}`
+            }
+        };
+
+        Axios.get('/api/user/logout', headers).then(Response => {
+            this.state.isLoggedIn = false;
+            localStorage.clear();
+
+            if (!this.state.loginBtnVisible) {
+                this.commit('toggleLoginBtnVisibleState');
+            }
+
+            if (this.state.logoutBtnVisible) {
+                this.commit('toggleLogoutBtnVisibleState');
+            }
+
+            if (this.state.loginModalVisible) {
+                this.commit('toggleLoginModalVisibleState');
+            }
+
+            if (this.state.loginEmailVisible) {
+                this.commit('toggleLoginEmailVisibleState');
+            }
         })
     }
-
-
-    // loadAllSkills({
-    //     commit
-    // }) {
-    //     Axios.get('api/skills').then(Response => {
-    //         commit('updateAllSkills', Response.data)
-    //         console.log(Response)
-    //         console.log('loadAllSkills from actions')
-    //     })
-    // }
 }

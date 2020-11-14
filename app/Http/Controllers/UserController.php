@@ -8,31 +8,45 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Illuminate\Database\QueryException;
+use Carbon\Carbon;
 
 class UserController extends Controller
 {
     public function login(Request $request)
     {
         $credentials = $request->validate([
-                'email' => 'required|string',
-                'password' => 'required|string'
+                'email' => 'required|email|exists:users,email',
+                'password' => 'required'
         ]);
 
-        if (Auth::attempt($credentials)) {
+        if (Auth::attempt($credentials, true)) {
             $user = Auth::user();
-            $success['token'] = $user->createToken('authToken')->accessToken;
+            $tokenResult = $user->createToken('authToken');
+            $token = $tokenResult->token;
 
-            return response()->json(['success' => $success]);
+            if ($request->remember_me)
+            $token->expires_at = Carbon::now()->addWeeks(1);
+
+            $success['user_id'] = $user->id;
+            $success['user_email'] = $user->email;
+            $success['access_token'] = $tokenResult->accessToken;
+            $success['token_type'] = 'Bearer';
+            $success['expires_at'] = Carbon::parse(
+                $token->expires_at
+            )->toDateTimeString();
+
+            return response()->json(['success' => $success], 200);
         }
 
-        return response()->json(['error' => 'Invalid access credentials'], 401);
+        return response()->json([
+            'error' => 'Invalid access credentials'], 401);
     }
 
     public function register(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required',
-            'email' => 'required|email',
+            'email' => 'required|email|unique:users',
             'password' => 'required',
         ]);
 
@@ -58,14 +72,37 @@ class UserController extends Controller
             }
         }
 
-        $success['token'] = $user->createToken('MyApp')->accessToken;
-        $success['name'] = $user->name;
+        $token = $user->createToken('authToken')->accessToken;
 
-        return response()->json(['success' => $success]);
+        return response()->json([
+            'user' => $user,
+            'access_token' => $token
+        ]);
     }
 
-    public function getDetails()
+    /**
+     * Get the authenticated User
+     *
+     * @return [json] user object
+     */
+    public function user(Request $request)
     {
-        return response()->json(['success' => Auth::user()]);
+        return response()->json($request->user());
+    }
+
+    public function getUserName($email)
+    {
+        $user = User::firstWhere('email', $email);
+
+        return $user->email;
+    }
+
+    public function logout(Request $request)
+    {
+        auth()->user()->tokens->each(function ($token, $key) {
+            $token->delete();
+        });
+
+        return response()->json(['message' => 'logout success'], 200);
     }
 }
