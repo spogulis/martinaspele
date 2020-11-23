@@ -31,5 +31,15 @@ export default {
                 this.commit('toggleLoginEmailVisibleState');
             }
         })
+    },
+    loginIfTokenExists({
+        commit
+    }) {
+        let headers = {
+            headers: {
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${this.state.userToken}`
+            }
+        };
     }
 }

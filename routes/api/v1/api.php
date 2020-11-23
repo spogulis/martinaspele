@@ -3,7 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\SkillController;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,18 +16,15 @@ use App\Http\Controllers\SkillController;
 |
 */
 
-// Route::post('/skills', [SkillController::class, 'index']);
-
-
 //User related
 Route::prefix('/user')->group(function() {
     Route::post('/login', [UserController::class, 'login']);
     Route::post('/register', [UserController::class, 'register']);
+    // Route::get('/verify', [UserController::class, 'verify']);
 
     Route::group(['middleware' => 'auth:api'], function () {
         Route::get('/logout', [UserController::class, 'logout']);
         Route::get('/user', [UserController::class, 'user']);
+        Route::get('/verify/{id}/{hash}', [UserController::class, 'verify']);
     });
 });
-
-

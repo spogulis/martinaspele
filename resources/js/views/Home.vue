@@ -3,7 +3,7 @@
         <div class="header-bg">
             <button
                 class="btn btn-outline-dark py-0"
-                v-if="!isLoggedIn"
+                v-if="!isLoggedIn && !loginModalVisible"
                 @click="showLoginModal()"
                 >LOGIN
             </button>
@@ -31,6 +31,11 @@
             showLoginModal() {
                 this.$store.commit('toggleLoginModalVisibleState');
                 this.$store.commit('toggleLoginBtnVisibleState');
+
+                if (this.$store.state.registerModalVisible)
+                {
+                    this.$store.commit('toggleRegisterModalVisibleState');
+                }
             },
             logout() {
                 this.$store.dispatch('logout');
@@ -53,6 +58,9 @@
                 }
 
                 return this.$store.state.loggedInUser;
+            },
+            loginModalVisible() {
+                return this.$store.state.loginModalVisible;
             }
         }
     }

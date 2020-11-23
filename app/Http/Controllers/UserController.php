@@ -9,6 +9,9 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Illuminate\Database\QueryException;
 use Carbon\Carbon;
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use Illuminate\Auth\Events\Verified;
 
 class UserController extends Controller
 {
@@ -51,7 +54,7 @@ class UserController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 401);
+            return response()->json(['error' => $validator->errors()->all()], 401);
         }
 
         $input = $request->all();
@@ -59,6 +62,8 @@ class UserController extends Controller
 
         try {
             $user = User::create($input);
+            $user->sendEmailVerificationNotification();
+            // $registerEvent = event(new Registered($user));
         }
         catch (QueryException $e)
         {
@@ -104,5 +109,20 @@ class UserController extends Controller
         });
 
         return response()->json(['message' => 'logout success'], 200);
+    }
+
+    public function checkLoggedIn(Request $request) {
+
+    }
+
+    public function verify(Request $request) {
+
+        $request->user()->markEmailAsVerified();
+
+        event(new Verified($request->user()));
+
+        $success['message'] = 'e-mail verification successfull';
+
+        return response()->json(['success' => $success], 200);
     }
 }

@@ -22,8 +22,11 @@
                     :key="index"
                     :style="{ color: linkColor || '#fff' }"
                 >
-                    <router-link :to="link.path">
-                        {{ link.name }}
+                    <router-link
+                        :to="link.path"
+                        v-on:click.native="register(link.name)"
+                    >
+                        {{ filterVisibleNavLinks(link) }}
                     </router-link>
                 </li>
             </ul>
@@ -40,6 +43,17 @@
             linkHoverBackground: String
         },
         methods: {
+            filterVisibleNavLinks(link) {
+                //link.name == 'REGISTER' && isLoggedIn ? '' : link.name
+                if ((link.name == 'REGISTER' && this.isLoggedIn) || link.name == 'VERIFY')
+                {
+                    return ''
+                }
+                else {
+                    return link.name;
+                }
+            }
+            ,
             showNav(event) {
                 this.$refs.showNavBtn.classList.add('disappear-top');
                 this.$refs.nav.classList.add('active');
@@ -49,6 +63,25 @@
                 this.$refs.nav.classList.remove('active');
                 this.$refs.showNavBtn.classList.remove('disappear-top');
                 this.$emit('showOverlay', false);
+            },
+            register(pathName) {
+                if (pathName == 'REGISTER') {
+                    if (!this.$store.state.registerModalVisible)
+                    {
+                        this.$store.commit('toggleRegisterModalVisibleState');
+                    }
+                    this.hideNav();
+
+                    if (this.$store.state.loginModalVisible)
+                    {
+                        this.$store.commit('toggleLoginModalVisibleState');
+                    }
+                }
+            },
+        },
+        computed: {
+            isLoggedIn() {
+                return this.$store.state.isLoggedIn;
             }
         }
     }

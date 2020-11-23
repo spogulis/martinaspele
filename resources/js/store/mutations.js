@@ -1,3 +1,5 @@
+import state from "./state";
+
 export default {
     login(state, isLoggedIn) {
         state.isLoggedIn = isLoggedIn
@@ -16,5 +18,11 @@ export default {
     },
     toggleLoginEmailVisibleState(state) {
         state.loginEmailVisible = !state.loginEmailVisible;
-    }
+    },
+    toggleRegisterModalVisibleState(state) {
+        state.registerModalVisible = !state.registerModalVisible;
+    },
+    toggleLoginPromptVisibleState(state) {
+        state.pleaseLoginModalVisible = !state.pleaseLoginModalVisible;
+    },
 }

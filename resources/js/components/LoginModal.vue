@@ -1,7 +1,7 @@
 <template>
     <div ref="login-modal-wrapper">
         <form class="login-modal">
-            <div class="title-wrapper"  v-if="windowWidth > 768">
+            <div class="title-wrapper">
                 <h2 class="d-inline mt-1">Login</h2>
             </div>
 
@@ -84,11 +84,6 @@
                 this.$store.commit('toggleLoginModalVisibleState');
                 this.$store.commit('toggleLoginBtnVisibleState');
             }
-        },
-        computed: {
-            windowWidth() {
-                return this.$store.state.windowWidth;
-            }
         }
     }
 </script>
@@ -105,12 +100,16 @@
     }
 
     .login-modal-wrapper {
-        top: 20px;
-        width: 500px;
+        width: 78%;
+        top: 40px;
         position: fixed;
         z-index: 999;
         display: flex;
         flex-direction: column;
+
+        @media #{$tabletPortrait} {
+            width: 500px;
+        }
     }
 
     .login-modal {
@@ -129,6 +128,13 @@
     .input-field-wrapper {
         display: flex;
         justify-content: space-around;
+        flex-direction: column;
+        padding: 0 2.5rem;
+
+        @media #{$tabletPortrait} {
+            flex-direction: row;
+            padding: 0;
+        }
     }
 
     .input-field-wrapper-left, .input-field-wrapper-right {

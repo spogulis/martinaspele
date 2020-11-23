@@ -6,7 +6,10 @@ Vue.use(VueRouter)
 
 import App from './views/App';
 import Home from './views/Home';
+import About from './views/About';
+import EmailVerify from './views/EmailVerify';
 import NotFound from './views/NotFound';
+import RegisterModal from './components/RegisterModal';
 
 const router = new VueRouter({
     mode: 'history',
@@ -14,6 +17,22 @@ const router = new VueRouter({
             path: '/',
             name: 'home',
             component: Home
+        },
+        {
+            path: '/',
+            name: 'register',
+            component: RegisterModal
+        },
+        {
+            path: '/verify',
+            name: 'verify',
+            component: EmailVerify,
+            props: (route) => ({ verifyQuery: route.query.verifyLink })
+        },
+        {
+            path: '/about',
+            name: 'about',
+            component: About
         },
         {
             path: '*',
@@ -27,5 +46,5 @@ const app = new Vue({
     el: '#app',
     components: { App },
     router,
-    store
+    store,
 });
