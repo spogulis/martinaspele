@@ -11,6 +11,16 @@
             v-if="checkLoginModalVisible"
         />
 
+        <RegisterModal
+            class="register-modal-wrapper"
+            v-if="checkRegisterModalVisible"
+        />
+
+        <PleaseLoginModal
+            class="please-login-modal-wrapper"
+            v-if="checkPleaseLoginModalVisible"
+        />
+
         <main>
             <router-view></router-view>
         </main>
@@ -22,11 +32,15 @@
 import { mapState } from 'vuex';
 import NavBar from '@/components/NavBar';
 import LoginModal from '@/components/LoginModal';
+import RegisterModal from '@/components/RegisterModal';
+import PleaseLoginModal from '@/components/PleaseLoginModal';
 
 export default {
     components: {
         NavBar,
-        LoginModal
+        LoginModal,
+        RegisterModal,
+        PleaseLoginModal,
     },
     data: function() {
         let navLinks = [
@@ -37,7 +51,16 @@ export default {
             {
                 path: '/about',
                 name: 'ABOUT'
-        }];
+            },
+            {
+                path: '/',
+                name: 'REGISTER'
+            },
+            {
+                path: '/verify',
+                name: 'VERIFY'
+            }
+        ];
 
         let isLoggedIn = null;
         let name =  null;
@@ -47,7 +70,7 @@ export default {
     methods: {
         onShowOverlay (value) {
             value === true ? this.$refs.overlay.classList.add('active') : this.$refs.overlay.classList.remove('active');
-        }
+        },
     },
     mounted(){
         let email = localStorage.getItem('user');
@@ -65,7 +88,16 @@ export default {
     computed: {
         checkLoginModalVisible() {
             return this.$store.state.loginModalVisible;
-        }
+        },
+        checkRegisterModalVisible() {
+            return this.$store.state.registerModalVisible;
+        },
+        checkPleaseLoginModalVisible() {
+            return this.$store.state.pleaseLoginModalVisible;
+        },
+        shouldHideNav() {
+            return this.$store.state.hideNav;
+        },
     },
     created() {
         window.addEventListener(

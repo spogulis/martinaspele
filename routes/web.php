@@ -20,4 +20,4 @@ use Illuminate\Support\Facades\Auth;
 
 Route::get('/{any}', 'App\Http\Controllers\SinglePageController@index')->where('any', '.*');
 
-Auth::routes();
+Auth::routes(['verify' => true]);
