@@ -1,32 +1,45 @@
 <template>
     <div class="wrapper">
         <div class="header-bg">
-            <button
-                class="btn btn-outline-dark py-0"
-                v-if="!isLoggedIn && !loginModalVisible"
-                @click="showLoginModal()"
-                >LOGIN
-            </button>
+            <div class="control-panel-wrapper">
+                <button
+                    class="btn btn-outline-dark py-0"
+                    v-if="!isLoggedIn && !loginModalVisible"
+                    @click="showLoginModal()"
+                    >LOGIN
+                </button>
 
-            <h4
-                class="user-name d-inline-block"
-                v-if="isLoggedIn"
-            >
-                {{ userName }}
-            </h4>
+                <h4
+                    class="user-name d-inline-block"
+                    v-if="isLoggedIn"
+                >
+                    {{ userName }}
+                </h4>
 
-            <button
-                class="btn btn-outline-dark py-0"
-                v-if="isLoggedIn"
-                @click="logout()"
-                >LOGOUT
-            </button>
+                <button
+                    class="btn btn-outline-dark py-0"
+                    v-if="isLoggedIn"
+                    @click="logout()"
+                    >LOGOUT
+                </button>
+            </div>
+
+            <div class="dashboard-wrapper">
+                <Dashboard
+                    v-if="isLoggedIn"
+                />
+            </div>
         </div>
     </div>
 </template>
 
 <script>
+    import Dashboard from '@/components/Dashboard';
+
     export default {
+        components: {
+            Dashboard
+        },
         methods: {
             showLoginModal() {
                 this.$store.commit('toggleLoginModalVisibleState');

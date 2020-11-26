@@ -4,7 +4,10 @@ export default {
     loginModalVisible: false,
     registerModalVisible: false,
     pleaseLoginModalVisible: false,
+    dashboardVisible: false,
     loggedInUser: "",
     userToken: "",
     hideNav: false,
+    userGeneralLevel: 0,
+    userImage: ''
 }

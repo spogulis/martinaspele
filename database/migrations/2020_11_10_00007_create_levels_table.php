@@ -16,7 +16,7 @@ class CreateLevelsTable extends Migration
         Schema::create('levels', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->foreignId('user_id')->constrained('users')->nullable();
-            $table->foreignId('skill_id')->constrained('skills');
+            $table->foreignId('skill_id')->nullable()->constrained('skills');
             $table->foreignId('level_type')->constrained('level_types');
             $table->integer('current_level');
             $table->integer('current_exp');

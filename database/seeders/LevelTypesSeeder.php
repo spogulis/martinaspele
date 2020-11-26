@@ -14,7 +14,7 @@ class LevelTypesSeeder extends Seeder
      */
     public function run()
     {
-        $levelTypes = ['type1', 'type2', 'type3'];
+        $levelTypes = ['general', 'public-skill', 'private-skill'];
 
         foreach ($levelTypes as $levelType)
         {

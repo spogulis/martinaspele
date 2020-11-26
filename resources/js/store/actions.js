@@ -1,4 +1,5 @@
 import Axios from "axios"
+import { bindAll } from "lodash";
 
 export default {
     logout({
@@ -32,7 +33,7 @@ export default {
             }
         })
     },
-    loginIfTokenExists({
+    getUserGeneralLevel({
         commit
     }) {
         let headers = {
@@ -41,5 +42,27 @@ export default {
                 'Authorization': `Bearer ${this.state.userToken}`
             }
         };
+
+        Axios.get('/api/user/getgenerallevel', headers).then(resp => {
+            this.state.userGeneralLevel = resp.data.current_level;
+        })
+    },
+    getUserImage({
+        commit
+    }) {
+        let headers = {
+            headers: {
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${this.state.userToken}`
+            }
+        };
+
+        Axios.get('/api/user/getuserimage', headers).then(resp => {
+            if (resp.data.user_image) {
+                this.state.userImage = resp.data.user_image;
+            } else {
+                this.state.userImage = '';
+            }
+        })
     }
 }

@@ -1,8 +1,10 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import store from './store/index';
+import AsyncComputed from 'vue-async-computed'
 
 Vue.use(VueRouter)
+Vue.use(AsyncComputed)
 
 import App from './views/App';
 import Home from './views/Home';

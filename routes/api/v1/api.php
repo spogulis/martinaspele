@@ -26,5 +26,6 @@ Route::prefix('/user')->group(function() {
         Route::get('/logout', [UserController::class, 'logout']);
         Route::get('/user', [UserController::class, 'user']);
         Route::get('/verify/{id}/{hash}', [UserController::class, 'verify']);
+        Route::get('/getgenerallevel', [UserController::class, 'getGeneralLevel']);
     });
 });

@@ -1,6 +1,6 @@
 <template>
     <div ref="verify-modal-wrapper">
-        <h1>You've reached verify page</h1>
+
     </div>
 </template>
 
@@ -69,7 +69,6 @@
                             }
                         })
                         .catch(error => {
-                            console.log('error happnd');
                             this.$router.push('/').then(response => {
                                 this.$store.commit('toggleLoginPromptVisibleState');
                             });
@@ -78,45 +77,6 @@
                 else {
                     // redirect to home and request login
                     this.$router.push('/');
-                }
-
-            },
-            doLogin() {
-                if (this.token && this.user) {
-                    let headers = {
-                    headers: {
-                        'Accept': 'application/json',
-                        'Authorization': `Bearer ${this.token}`
-                    }
-                    };
-
-                    // axios.post('/api/user/verify/' . , {
-                    // email: this.email,
-                    // password: this.password
-                    // })
-                    // .then(response => {
-                    //     if (response.data.success)
-                    //     {
-                    //         localStorage.setItem('user',response.data.success.user_email)
-                    //         localStorage.setItem('jwt',response.data.success.access_token)
-
-                    //         this.$store.state.loggedInUser = response.data.success.user_email;
-                    //         this.$store.state.userToken = response.data.success.access_token;
-                    //         this.$store.state.isLoggedIn = true;
-                    //         this.$store.state.logoutBtnVisible = true;
-                    //         this.$store.state.loginEmailVisible = true;
-                    //         this.$store.commit('toggleLoginModalVisibleState');
-                    //     }
-                    //     else
-                    //     {
-                    //         JSON.stringify(response);
-                    //     }
-                    // })
-                    // .catch(function (error) {
-                    //     console.error(error);
-                    // });
-                } else {
-                    // Prompt login and redirect to backend
                 }
             }
         }

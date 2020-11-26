@@ -227,6 +227,7 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
         'PassportServiceProvider' => Laravel\Passport\PassportServiceProvider::class,
+        'Constants' => app\Constants::class,
     ],
 
 ];

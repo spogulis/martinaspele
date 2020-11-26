@@ -12,6 +12,10 @@ use Carbon\Carbon;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Auth\Events\Verified;
+use App\Models\Level;
+use App\Models\LevelType;
+use App\Models\SkillType;
+use App\Constants;
 
 class UserController extends Controller
 {
@@ -63,26 +67,30 @@ class UserController extends Controller
         try {
             $user = User::create($input);
             $user->sendEmailVerificationNotification();
-            // $registerEvent = event(new Registered($user));
+            $this->setUserGeneralLevel($user);
+
+            $token = $user->createToken('authToken')->accessToken;
+            $success['user_email'] = $user->email;
+            $success['access_token'] = $token;
+
+            return response()->json(['success' => $success], 200);
         }
         catch (QueryException $e)
         {
             $errorCode = $e->errorInfo[1];
+            $error = [];
 
             switch ($errorCode) {
                 case (1062):
-                    return 'User already exists';
+                    $error['message'] = 'User already exists';
+
+                    return response()->json(['error' => $error], $errorCode);
                 default:
-                    return 'Something went wrong';
+                    $error['message'] = 'Something went wrong';
+
+                    return response()->json(['error' => $error], $errorCode);
             }
         }
-
-        $token = $user->createToken('authToken')->accessToken;
-
-        return response()->json([
-            'user' => $user,
-            'access_token' => $token
-        ]);
     }
 
     /**
@@ -95,12 +103,6 @@ class UserController extends Controller
         return response()->json($request->user());
     }
 
-    public function getUserName($email)
-    {
-        $user = User::firstWhere('email', $email);
-
-        return $user->email;
-    }
 
     public function logout(Request $request)
     {
@@ -111,11 +113,8 @@ class UserController extends Controller
         return response()->json(['message' => 'logout success'], 200);
     }
 
-    public function checkLoggedIn(Request $request) {
-
-    }
-
-    public function verify(Request $request) {
+    public function verify(Request $request)
+    {
 
         $request->user()->markEmailAsVerified();
 
@@ -124,5 +123,35 @@ class UserController extends Controller
         $success['message'] = 'e-mail verification successfull';
 
         return response()->json(['success' => $success], 200);
+    }
+
+    public function getUserName($email)
+    {
+        $user = User::firstWhere('email', $email);
+
+        return $user->email;
+    }
+
+    public function getGeneralLevel()
+    {
+        $user = Auth::user();
+
+        return Level::firstWhere('user_id', $user->id);
+    }
+
+    protected function setUserGeneralLevel(User $user)
+    {
+        $levelType = LevelType::where('type', 'general')->first();
+
+        Level::create([
+            'user_id' => $user->id,
+            'skill_id' => null,
+            'level_type' => $levelType->id,
+            'current_level' => 0,
+            'current_exp' => 0,
+            'exp_to_level_up' => Constants::INITIAL_GENERAL_LEVEL,
+            'exp_increase_ratio' => Constants::INITIAL_GENERAL_LEVEL_EXP_INCREASE_RATIO,
+            'level_achievement_date' => Carbon::now()
+        ]);
     }
 }

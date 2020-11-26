@@ -40,7 +40,7 @@ export default {
         NavBar,
         LoginModal,
         RegisterModal,
-        PleaseLoginModal,
+        PleaseLoginModal
     },
     data: function() {
         let navLinks = [
@@ -72,7 +72,7 @@ export default {
             value === true ? this.$refs.overlay.classList.add('active') : this.$refs.overlay.classList.remove('active');
         },
     },
-    mounted(){
+    beforeMount(){
         let email = localStorage.getItem('user');
         let token = localStorage.getItem('jwt');
 
