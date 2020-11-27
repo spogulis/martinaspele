@@ -16,6 +16,7 @@ use App\Models\Level;
 use App\Models\LevelType;
 use App\Models\SkillType;
 use App\Constants;
+use App\Models\Image;
 
 class UserController extends Controller
 {
@@ -153,5 +154,24 @@ class UserController extends Controller
             'exp_increase_ratio' => Constants::INITIAL_GENERAL_LEVEL_EXP_INCREASE_RATIO,
             'level_achievement_date' => Carbon::now()
         ]);
+    }
+
+    public function getProfileImage() {
+        $user = Auth::user();
+        $success['image'] = $user->image;
+
+        return response()->json(['success' => $success], 200);
+    }
+
+    public function setProfileBgImage(Request $request) {
+        $user = Auth::user();
+
+        $validatedData = $request->validate([
+            'image' => 'required|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
+        ]);
+
+        $path = $request->file('image')->store('public/images/profile-images');
+        $user->image = ltrim(ltrim($path, 'public'), '/');
+        $user->save();
     }
 }

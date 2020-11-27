@@ -57,12 +57,50 @@ export default {
             }
         };
 
-        Axios.get('/api/user/getuserimage', headers).then(resp => {
-            if (resp.data.user_image) {
-                this.state.userImage = resp.data.user_image;
+        Axios.get('/api/user/getuserprofileimage', headers).then(resp => {
+            console.log(resp);
+            if (resp.data.success) {
+                this.state.userImage = resp.data.success.image;
             } else {
                 this.state.userImage = '';
             }
+        })
+    },
+    getUserBGImage({
+        commit
+    }) {
+        let headers = {
+            headers: {
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${this.state.userToken}`
+            }
+        };
+
+        Axios.get('/api/user/getuserbgimage', headers).then(resp => {
+            console.log(resp);
+            if (resp.data.user_bg_image) {
+                this.state.userBGImage = resp.data.user_bg_image;
+            } else {
+                this.state.userBGImage = '/images/default_bg_image.jpg';
+            }
+        })
+    },
+    setUserBGImage({ commit },
+        payload
+    ) {
+        let headers = {
+            headers: {
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${this.state.userToken}`
+            }
+        };
+
+        Axios.post('/api/user/setuserbgimage', payload, headers).then(resp => {
+            // if (resp.data.user_bg_image) {
+            //     this.state.userBGImage = resp.data.user_bg_image;
+            // } else {
+            //     this.state.userBGImage = '/images/default_bg_image.jpg';
+            // }
         })
     }
 }

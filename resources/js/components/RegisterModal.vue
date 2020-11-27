@@ -114,7 +114,7 @@
                             {
                                 localStorage.setItem('user',response.data.success.user_email)
                                 localStorage.setItem('jwt',response.data.success.access_token)
-                                console.log('it works and this is user: ' + response.data.success.user_email);
+
                                 this.$store.state.loggedInUser = response.data.success.user_email;
                                 this.$store.state.userToken = response.data.success.access_token;
                                 this.$store.state.isLoggedIn = true;

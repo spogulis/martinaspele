@@ -1,6 +1,6 @@
 <template>
     <div class="wrapper">
-        <div class="header-bg">
+        <div class="home-bg" :style="bgStyles">
             <div class="control-panel-wrapper">
                 <button
                     class="btn btn-outline-dark py-0"
@@ -74,20 +74,32 @@
             },
             loginModalVisible() {
                 return this.$store.state.loginModalVisible;
+            },
+            bgStyles() {
+                return {
+                    'background-image': 'url(' + this.$store.state.userBGImage + ')',
+                    'height': '100vh',
+                    'width': '100%',
+                    'background-size': 'cover',
+                    'background-attachment': 'fixed',
+                    'background-position': 'top',
+                    'background-repeat': 'no-repeat',
+                    'padding': '12px 50px'
+                }
             }
         }
     }
 </script>
 
 <style lang="scss" scoped>
-    .header-bg {
-        background-image: url('/images/header_bg.jpg');
-        height: 100vh;
-        width: 100%;
-        background-size: cover;
-        background-attachment: fixed;
-        background-position: top;
-        background-repeat: no-repeat;
-        padding: 12px 50px;
-    }
+    // .home-bg {
+    //     background-image: url('/images/default_bg_image.jpg');
+    //     height: 100vh;
+    //     width: 100%;
+    //     background-size: cover;
+    //     background-attachment: fixed;
+    //     background-position: top;
+    //     background-repeat: no-repeat;
+    //     padding: 12px 50px;
+    // }
 </style>

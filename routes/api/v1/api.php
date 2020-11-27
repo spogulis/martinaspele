@@ -27,5 +27,7 @@ Route::prefix('/user')->group(function() {
         Route::get('/user', [UserController::class, 'user']);
         Route::get('/verify/{id}/{hash}', [UserController::class, 'verify']);
         Route::get('/getgenerallevel', [UserController::class, 'getGeneralLevel']);
+        Route::get('/getuserprofileimage', [UserController::class, 'getProfileImage']);
+        Route::post('/setuserbgimage', [UserController::class, 'setProfileBgImage']);
     });
 });

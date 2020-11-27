@@ -1,6 +1,16 @@
 <template>
     <div ref="dashboard" class="dashboard">
         <div class="dashboard-left">
+            <input
+            type="file"
+            ref="profileImageUploadInput"
+            v-on:change="onProfileImageFileChange"
+            style="display: none">
+            <fab
+                :actions="fabActions"
+                @updatePicture="updatePicture"
+                @alertMe="alert"
+            />
             <div class="dashboard-left-top">
                 <img :src="imageLoaded" alt="User image">
                 <h1>Level: {{ getUserGeneralLevel }}</h1>
@@ -22,10 +32,43 @@
 </template>
 
 <script>
+    import fab from 'vue-fab'
+
     export default {
+        components: {
+            fab
+        },
         data() {
             return {
-                imageLoading: false
+                imageLoading: false,
+                profileImage: null,
+                fabActions: [
+                    {
+                        name: 'updatePicture',
+                        icon: 'add_a_photo'
+                    },
+                    {
+                        name: 'alertMe',
+                        icon: 'add_alert'
+                    }
+                ]
+            }
+        },
+        methods: {
+            updatePicture() {
+                this.$refs.profileImageUploadInput.click();
+            },
+            onProfileImageFileChange(e) {
+                this.profileImage = e.target.files[0];
+
+                if (this.profileImage) {
+                    let formData = new FormData();
+                    formData.append('image', this.profileImage);
+                    this.$store.dispatch('setUserBGImage', formData);
+                }
+            },
+            alert() {
+                alert('Clicked on alert icon');
             }
         },
         computed: {

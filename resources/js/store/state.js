@@ -9,5 +9,6 @@ export default {
     userToken: "",
     hideNav: false,
     userGeneralLevel: 0,
-    userImage: ''
+    userImage: '',
+    userBGImage: '/images/default_bg_image.jpg'
 }
